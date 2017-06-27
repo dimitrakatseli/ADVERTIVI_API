@@ -1,0 +1,282 @@
+@font-face {
+    font-family: "FuturaRoundDemi";
+    src: url("../assets/fonts/futura_round_demi.eot");
+    src: url("../assets/fonts/futura_round_demi-.eot#iefix") format("embedded-opentype"),
+    url("../assets/fonts/futura_round_demi.woff2") format("woff2"),
+    url("../assets/fonts/futura_round_demi.woff") format("woff"),
+    url("../assets/fonts/futura_round_demi.ttf") format("truetype"),
+    url("../assets/fonts/futura_round_demi.svg#a_futurarounddemiregular") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "FuturaRound-Bold";
+    src: url("../assets/fonts/futura_round_demi_bold.eot");
+    src: url("../assets/fonts/futura_round_demi_bold-.eot#iefix") format("embedded-opentype"),
+    url("../assets/fonts/futura_round_demi_bold.woff2") format("woff2"),
+    url("../assets/fonts/futura_round_demi_bold.woff") format("woff"),
+    url("../assets/fonts/futura_round_demi_bold.ttf") format("truetype"),
+    url("../assets/fonts/futura_round_demi_bold.svg#a_futuraroundbold") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+.navbar-inverse .navbar-brand {
+    font-family: "FuturaRound-Bold", Arial;
+    font-size: 40px;
+    line-height: 34px;
+    padding: 18px;
+    color: #2c365e;
+}
+
+.navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {
+    color: #2c365e;
+    background-color: transparent;
+}
+
+.header {
+    background: #2c365e;
+}
+
+.header .overlay-layer {
+    padding-bottom: 0;
+}
+
+.overlay1 .row {
+    background: #2c365e;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+    margin: 20px 0;
+
+    height: 150px;
+}
+
+.slogan {
+    color: #FEFEFE;
+    font-family: 'FuturaRound-Bold', Helvetica Neue, Sans-serif;
+    position: relative;
+    right: 5%;
+
+    font-size: 22px;
+    top: 88%;
+}
+
+.overlay-layer {
+    background: none;
+}
+
+.owl-theme .owl-controls .owl-page span {
+    background: #2c365e;
+}
+
+.overlay-layer-2 {
+    background: #2c365e;
+}
+
+.btn-default:hover {
+    color: #008ed6 !important;
+}
+
+/*---------------------------------------
+   4.1 FIXES FOR 992PX to <= 1199PX SCREENS
+-----------------------------------------*/
+@media (min-width: 992px) and (max-width: 1199px) {
+    .overlay1 .row {
+        height: 450px;
+    }
+
+    .slogan {
+        font-size: 22px;
+        top: 88%;
+    }
+}
+
+/*---------------------------------------
+   4.2 FIXES FOR <= 1024PX SCREENS
+-----------------------------------------*/
+@media (max-width: 1024px) {
+    .overlay1 .row {
+        /*height: 330px;*/
+    }
+}
+
+/*---------------------------------------
+   4.3 FIXES FOR <= 991PX SCREENS
+-----------------------------------------*/
+@media (max-width: 991px) {
+    .overlay1 .row {
+        height: 330px;
+    }
+}
+
+/*---------------------------------------
+   4.4 FIXES FOR => 768PX to <= 991PX SCREENS
+-----------------------------------------*/
+@media (min-width: 768px) and (max-width: 991px) {
+    .overlay1 .row {
+        height: 380px;
+    }
+
+    .slogan {
+        text-align: center;
+        font-size: 24px;
+        top: 94%;
+        right: 0;
+    }
+
+    .navbar-brand {
+        padding: 8px;
+    }
+}
+
+/*---------------------------------------
+   4.5 FIXES FOR <= 768PX SCREENS
+-----------------------------------------*/
+@media (max-width: 767px) {
+    .overlay1 .row {
+        height: 340px;
+    }
+
+    .slogan {
+        font-size: 24px;
+        top: 94%;
+        right: 0;
+    }
+}
+
+/*---------------------------------------
+   4.6 FIXES FOR MOBILE SCREENS
+-----------------------------------------*/
+@media (max-width: 580px) {
+    .overlay1 .row {
+        height: 270px;
+    }
+
+    .slogan {
+        font-size: 20px;
+        top: 94%;
+        right: 0;
+    }
+}
+
+/*---------------------------------------
+   4.7 FIXES FOR MOBILE SCREENS
+-----------------------------------------*/
+@media (max-width: 500px) {
+    .overlay1 .row {
+        height: 220px;
+    }
+
+    .slogan {
+        font-size: 14px;
+        top: 94%;
+        right: 0;
+    }
+}
+
+div#offers-table_processing {
+    width: 100%;
+    left: 0;
+    top: 0;
+    height: 100%;
+    margin: 0;
+    opacity: 0.6;
+    z-index: 9;
+    vertical-align: middle;
+    display: block;
+    padding: 50% 0;
+}
+
+pre {
+    height: auto;
+    max-height: 200px;
+    overflow-x: scroll;
+    background-color: #eeeeee;
+    word-break: normal !important;
+    word-wrap: normal !important;
+    white-space: pre !important;
+}
+
+.btn-round {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.btn-round.btn-xs {
+    padding: 4px 6px;
+}
+
+.btn-round.btn-lg {
+    width: 48px;
+    height: 48px;
+}
+
+.btn-round.btn-sm {
+    width: 34px;
+    height: 34px;
+}
+
+.btn-round.btn-xs {
+    width: 24px;
+    height: 24px;
+}
+
+.switch-wrapper {
+    margin-right: 5px;
+}
+
+.switch-wrapper > input[type="checkbox"] {
+    display: none;
+}
+
+.switch-wrapper > label {
+    cursor: pointer;
+    height: 0px;
+    position: relative;
+    width: 40px;
+}
+
+.switch-wrapper > label::before {
+    background: rgb(0, 0, 0);
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    content: '';
+    height: 16px;
+    margin-top: -8px;
+    position:absolute;
+    opacity: 0.3;
+    transition: all 0.4s ease-in-out;
+    width: 40px;
+}
+.switch-wrapper > label::after {
+    background: rgb(255, 255, 255);
+    border-radius: 16px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    content: '';
+    height: 24px;
+    left: -4px;
+    margin-top: -8px;
+    position: absolute;
+    top: -4px;
+    transition: all 0.3s ease-in-out;
+    width: 24px;
+}
+.switch-wrapper > input[type="checkbox"]:checked + label::before {
+    background: inherit;
+    opacity: 0.5;
+}
+.switch-wrapper > input[type="checkbox"]:checked + label::after {
+    background: inherit;
+    left: 20px;
+}
+
+.switch-label {
+    display: inline-block;
+    position: relative;
+    top: 2px;
+    font-weight: bold;
+}
