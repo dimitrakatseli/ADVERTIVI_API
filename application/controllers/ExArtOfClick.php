@@ -15,7 +15,7 @@ class ExArtOfClick extends CI_Controller {
 			$sourceId=$json_OfferData['addedsourceId'];
 			
 			
-			$api_key=$json_OfferData['api_key'];
+			//$api_key=$json_OfferData['api_key'];
 			
 			$data=$json_OfferData['offerDataTosend'];
 			$offer=(object)$json_OfferData['offer'];
@@ -78,6 +78,7 @@ class ExArtOfClick extends CI_Controller {
 						$offer->affiseofferid=$result->offer->id;
 						$offer->advertiser=$result->offer->advertiser;
 						array_push($offerTolocalAdd,$offer);
+						echo "1";
 					}						
 			
 				if(count($offerTolocalAdd)>0){	
@@ -94,6 +95,7 @@ class ExArtOfClick extends CI_Controller {
 				$header = Array(); 
 				$header[0] =  "Content-type: multipart/form-data";
 				$header[1]="API-Key:fe1a826b70bb1db82c83fd2539ed2696380a7a8a";
+
 
 				$uData=$OfferRequest;
 				$ch_affise = curl_init(); 

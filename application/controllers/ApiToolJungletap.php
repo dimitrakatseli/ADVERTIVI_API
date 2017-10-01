@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ApiToolJungletap extends CI_Controller {
 	public $ExistingOffers=array();
+	public $Categories=array();
 	public function __construct()
         {		parent::__construct();
 				$this->load->model('Api_Jungletap_database');
@@ -10,6 +11,7 @@ class ApiToolJungletap extends CI_Controller {
         }  
 		public function index()
 		{
+		
 			$demand_sources=$this->Api_Jungletap_database->get_demand_sources(12);
 			if(isset($demand_sources[0])&&$demand_sources[0]->status==1){
 				$this->jungletap($demand_sources[0]->demand_source_id,$demand_sources[0]->affise_adevrtiser_id,$demand_sources[0]->api_key,$demand_sources[0]->api_url);
@@ -19,7 +21,7 @@ class ApiToolJungletap extends CI_Controller {
 		
 		public function jungletap($sourceId,$advertiserId,$api_key,$api_url){
 			$_response='';
-			
+		
 		// ADVERTISR API KEY
 			$affise_api_key="fe1a826b70bb1db82c83fd2539ed2696380a7a8a";
 			
@@ -44,59 +46,32 @@ class ApiToolJungletap extends CI_Controller {
 			if($ch_result != false){
 				$_response = json_decode($ch_result);
 			}
-		
-			
+			curl_close($ch);			
 			$propcnt=0;
 			$addcount=0;
 			$updatecount=0;
 			if($_response!=''&&$_response->success>0){
-				
 				$offerTolocalForEdit=array();
 				$deletedOffersFromAffise=array();
 				$allOffersFromAdvertiser=array();
 				$os=array();
-				curl_close($ch);
-				 $this->ExistingOffers=$this->Api_Jungletap_database->getExistingOffer_db($advertiserId);
+				$this->ExistingOffers=$this->Api_Jungletap_database->getExistingOffer_db($advertiserId);
+				$this->Categories=$this->Api_Jungletap_database->getCategories_db();
 				foreach($_response->offers as $offer){
-				
 					$data = [];
-
-					if(!(isset($offer->Approved))||!($offer->Approved=="1")){
-						continue;
-					}
 					
-					if(isset($offer->Status)&&$offer->Status=='active'){
 					$data['status']=$offer->Status;
 
-					}else{
-					continue;
-					}
-					
-					if(isset($offer->Name)&&$offer->Name!=''){
 					$data['title']=($offer->Name);
-
-					}else{
-					continue;
-					}
-					
-										
 					if(isset($offer->Tracking_url)&&$offer->Tracking_url!=''){
 					$tUrldata=explode("?",$offer->Tracking_url);
 					$trackingUrl=$tUrldata[0];
 					$data['url']=$trackingUrl."?aff_sub={clickid}&aff_sub2={pid}";
-
-
-					}else{
-					continue;
 					}
-
 					if(isset($offer->Preview_url)&&$offer->Preview_url!=''){
 					$data['url_preview']=$offer->Preview_url;
 
-					}else{
-					continue;
 					}
-
 
 					if(isset($offer->Countries)&&$offer->Countries!=''){
 					$allcountries=explode(",",$offer->Countries);
@@ -104,6 +79,16 @@ class ApiToolJungletap extends CI_Controller {
 					$data['countries[{'.$i.'}]']=$country;
 					}
 					}
+					if(isset($offer->Tags)&&$offer->Tags!=''){
+						$allTags=explode(",",$offer->Tags);
+						foreach($allTags as $i=>$Tag){
+							$Tagkey = array_search(strtolower($Tag), array_map('strtolower',$this->Categories));
+							if($Tagkey){
+								$data['categories[{'.$i.'}]']=$Tagkey;
+							}
+						}
+					}
+							
 					if(isset($offer->Description)&&$offer->Description!=''){
 					$data['description']=$offer->Description;
 					}
@@ -169,6 +154,42 @@ class ApiToolJungletap extends CI_Controller {
 					array_push($allOffersFromAdvertiser,$offer->ID);
 					$oldOffer=$this->checkExistingOffer($offer->ID,$advertiserId);
 					if(!$oldOffer['isexist']){
+						
+						if(!(isset($offer->Approved))||!($offer->Approved=="1")){
+							continue;
+						}
+						
+						if(isset($offer->Status)&&$offer->Status=='active'){
+						$data['status']=$offer->Status;
+
+						}else{
+						continue;
+						}
+						
+						if(isset($offer->Name)&&$offer->Name!=''){
+						$data['title']=($offer->Name);
+
+						}else{
+						continue;
+						}
+						
+											
+						if(isset($offer->Tracking_url)&&$offer->Tracking_url!=''){
+						$tUrldata=explode("?",$offer->Tracking_url);
+						$trackingUrl=$tUrldata[0];
+						$data['url']=$trackingUrl."?aff_sub={clickid}&aff_sub2={pid}";
+
+
+						}else{
+						continue;
+						}
+
+						if(isset($offer->Preview_url)&&$offer->Preview_url!=''){
+						$data['url_preview']=$offer->Preview_url;
+
+						}else{
+						continue;
+						}
 						$headerExOffer = Array(); 
 						$headerExOffer[0] =  "Content-type: application/json";
 						$sendData=array();
@@ -191,16 +212,30 @@ class ApiToolJungletap extends CI_Controller {
 						//	curl_setopt($chExOffer, CURLOPT_NOSIGNAL, 1);
 						curl_setopt($chExOffer, CURLOPT_RETURNTRANSFER, 1);
 						curl_setopt($chExOffer, CURLOPT_HTTPHEADER, $headerExOffer);
-						curl_exec($chExOffer);
+						$r=curl_exec($chExOffer);
+						
+						if($r=="1"){
+						
+							$addcount++;
+						}
 						curl_close($chExOffer);
-						$addcount++;
+					
 					}else{
 						$localOfferId=$oldOffer['oldOfferData']['id'];
 						
 						$oldAffiseOfferId=$oldOffer['oldOfferData']['affise_offer_id'];
 						$deltedFromAffise=$oldOffer['oldOfferData']['deletedFromAffise'];
 						$changeCount=0;
+						if($offer->Approved!=$oldOffer['oldOfferData']['approved']){
+							if(!(isset($offer->Approved))||$offer->Approved!=1){
+								$data['status']='stopped';
+							}
+							$changeCount++;
+						}
 						if(($offer->Status)!=$oldOffer['oldOfferData']['status']){
+							if($offer->Status=='inactive'){
+								$data['status']='suspended';
+							}
 							$changeCount++;
 						}
 						if(urlencode($offer->Name)!=$oldOffer['oldOfferData']['title']){
@@ -230,10 +265,10 @@ class ApiToolJungletap extends CI_Controller {
 					*/	
 								
 						if(!$deltedFromAffise&&$changeCount>0){
-							
-							$updatecount++;
+							$updatecount++;	
 							$result=$this->updateOfferToAffise($data,$oldAffiseOfferId);
-							if($result->status==1){	
+							if($result->status==1){
+									
 								$offer->oldid=$localOfferId;
 								$offer->affiseofferid=$result->offer->id;
 								$offer->advertiser=$result->offer->advertiser;
@@ -242,8 +277,10 @@ class ApiToolJungletap extends CI_Controller {
 								array_push($deletedOffersFromAffise,$localOfferId);
 							}				
 						}
-					}			
-					if($addcount>50||$updatecount>50){
+					}
+					
+					if($addcount>60||$updatecount>200){
+					
 					break;
 					}
 					
@@ -310,17 +347,17 @@ class ApiToolJungletap extends CI_Controller {
 		public function updateOfferToAffise($OfferRequest,$offerId){
 			
 			//API URL
-			$affise_GETOFFER_api_url  ="http://api.advertivi.com/2.1/offer"; 
+			$affise_GETOFFER_api_url  ="http://api.advertivi.com/3.0/offer"; 
 			
 			//HEADER
 			$header = Array(); 
-			$header[0] = "Content-Type: application/x-www-form-urlencoded";
-			$header[1]="Accept: application/json";
-			$header[2]="API-Key:fe1a826b70bb1db82c83fd2539ed2696380a7a8a";
+			$header[0] =  "Content-type: multipart/form-data";
+			//$header[1]="Accept: application/json";
+			$header[1]="API-Key:fe1a826b70bb1db82c83fd2539ed2696380a7a8a";
 			$uData=$OfferRequest;
 	
 			$ch_affise = curl_init(); 
-			curl_setopt($ch_affise, CURLOPT_URL, "http://api.advertivi.com/2.1/admin/offer/".$offerId); 
+			curl_setopt($ch_affise, CURLOPT_URL, "http://api.advertivi.com/3.0/admin/offer/".$offerId); 
 			curl_setopt($ch_affise, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)');
 			
 			//curl_setopt($ch, CURLOPT_HEADER, 1); 
@@ -349,15 +386,16 @@ class ApiToolJungletap extends CI_Controller {
 		$oldRecord=array();
 		$oldRecord['isexist']=false;
 		$oldoffer=array();
-		if(count($this->ExistingOffers)>0){
-		foreach($this->ExistingOffers as $ExistingOffer){
-			if($ExistingOffer->advertiser_offer_id==$advertOfferId){
-				$oldRecord['isexist']=true;
-				$oldRecord['oldOfferData']=(array)$ExistingOffer;
-				$found=1;
-				break;
+	
+		if(($this->ExistingOffers)&&!(empty($this->ExistingOffers))&&count($this->ExistingOffers)>0){
+			foreach($this->ExistingOffers as $ExistingOffer){
+				if($ExistingOffer->advertiser_offer_id==$advertOfferId){
+					$oldRecord['isexist']=true;
+					$oldRecord['oldOfferData']=(array)$ExistingOffer;
+					$found=1;
+					break;
+				}
 			}
-		}
 		}
 		return $oldRecord;
 		

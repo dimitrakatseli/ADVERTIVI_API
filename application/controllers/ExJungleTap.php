@@ -92,6 +92,7 @@ class ExJungleTap extends CI_Controller {
 					$offer->affiseofferid=$result->offer->id ;
 					$offer->advertiser=$result->offer->advertiser;
 					array_push($offerTolocalAdd,$offer);
+					echo "1";
 				}						
 				if(count($offerTolocalAdd)>0){	
 					$addedTolocal=$this->Api_Jungletap_database->addTolocalDb($sourceId,$offerTolocalAdd,$advertiserId);
