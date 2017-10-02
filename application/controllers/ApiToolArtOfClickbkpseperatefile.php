@@ -21,7 +21,7 @@ class ApiToolArtOfClick extends CI_Controller {
 			ini_set('mysql.connect_timeout', 1000);
 			ini_set('default_socket_timeout', 1000);
 		// ADVERTISR API KEY
-			$affise_api_key="fe1a826b70bb1db82c83fd2539ed2696380a7a8a";
+			$affise_api_key="cc55b8e0c20027cbba6cc8fbd3cf7801642bc6d6";
 		
 		// ADVERTISR API KEY 
 			//$api_key="516369095c02f52147f379aa0a7a522fb58b5ccef2a0b995e91f339fbd719737";

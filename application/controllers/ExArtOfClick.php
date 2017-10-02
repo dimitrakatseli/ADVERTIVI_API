@@ -90,16 +90,16 @@ class ExArtOfClick extends CI_Controller {
 		public function sendOfferToAffise($OfferRequest){
 		///	print_r($OfferRequest);
 			//API URL
-				$affise_api_url  ="http://api.advertivi.com/2.1/admin/offer"; 
+				$affise_api_url  ="http://api.advertivi.com/3.0/admin/offer"; 
 			//HEADER
 				$header = Array(); 
 				$header[0] =  "Content-type: multipart/form-data";
-				$header[1]="API-Key:fe1a826b70bb1db82c83fd2539ed2696380a7a8a";
+				$header[1]="API-Key:cc55b8e0c20027cbba6cc8fbd3cf7801642bc6d6";
 
 
 				$uData=$OfferRequest;
 				$ch_affise = curl_init(); 
-			curl_setopt($ch_affise, CURLOPT_URL, "http://api.advertivi.com/2.1/admin/offer"); 
+			curl_setopt($ch_affise, CURLOPT_URL, "http://api.advertivi.com/3.0/admin/offer"); 
 			curl_setopt($ch_affise, CURLOPT_HTTPHEADER, $header);
 			curl_setopt($ch_affise, CURLOPT_POST, 1);
 			curl_setopt($ch_affise, CURLOPT_POSTFIELDS, $uData);

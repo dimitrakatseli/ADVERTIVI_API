@@ -23,7 +23,7 @@ class ApiToolJungletap extends CI_Controller {
 			$_response='';
 		
 		// ADVERTISR API KEY
-			$affise_api_key="fe1a826b70bb1db82c83fd2539ed2696380a7a8a";
+			$affise_api_key="cc55b8e0c20027cbba6cc8fbd3cf7801642bc6d6";
 			
 		//HEADER
 			
@@ -353,7 +353,7 @@ class ApiToolJungletap extends CI_Controller {
 			$header = Array(); 
 			$header[0] =  "Content-type: multipart/form-data";
 			//$header[1]="Accept: application/json";
-			$header[1]="API-Key:fe1a826b70bb1db82c83fd2539ed2696380a7a8a";
+			$header[1]="API-Key:cc55b8e0c20027cbba6cc8fbd3cf7801642bc6d6";
 			$uData=$OfferRequest;
 	
 			$ch_affise = curl_init(); 

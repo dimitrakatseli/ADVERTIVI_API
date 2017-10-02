@@ -20,7 +20,7 @@ class ApiToolArtOfClickbkpUpdated extends CI_Controller {
 			$_response='';
 			ini_set('default_socket_timeout', 1000);
 		// ADVERTISR API KEY
-			$affise_api_key="fe1a826b70bb1db82c83fd2539ed2696380a7a8a";
+			$affise_api_key="cc55b8e0c20027cbba6cc8fbd3cf7801642bc6d6";
 		
 		// ADVERTISR API KEY 
 			//$api_key="516369095c02f52147f379aa0a7a522fb58b5ccef2a0b995e91f339fbd719737";
@@ -342,15 +342,15 @@ class ApiToolArtOfClickbkpUpdated extends CI_Controller {
 			print_r($OfferRequest);
 			exit;
 			//API URL
-				$affise_api_url  ="http://api.advertivi.com/2.1/admin/offer"; 
+				$affise_api_url  ="http://api.advertivi.com/3.0/admin/offer"; 
 			//HEADER
 				$header = Array(); 
 				$header[0] =  "Content-type: multipart/form-data";
-				$header[1]="API-Key:fe1a826b70bb1db82c83fd2539ed2696380a7a8a";
+				$header[1]="API-Key:cc55b8e0c20027cbba6cc8fbd3cf7801642bc6d6";
 
 				$uData=$OfferRequest;
 				$ch_affise = curl_init(); 
-			curl_setopt($ch_affise, CURLOPT_URL, "http://api.advertivi.com/2.1/admin/offer"); 
+			curl_setopt($ch_affise, CURLOPT_URL, "http://api.advertivi.com/3.0/admin/offer"); 
 			curl_setopt($ch_affise, CURLOPT_HTTPHEADER, $header);
 			curl_setopt($ch_affise, CURLOPT_POST, 1);
 			curl_setopt($ch_affise, CURLOPT_POSTFIELDS, $uData);
@@ -377,11 +377,11 @@ class ApiToolArtOfClickbkpUpdated extends CI_Controller {
 			$header = Array(); 
 			$header[0] = "Content-Type: application/x-www-form-urlencoded";
 			$header[1]="Accept: application/json";
-			$header[2]="API-Key:fe1a826b70bb1db82c83fd2539ed2696380a7a8a";
+			$header[2]="API-Key:cc55b8e0c20027cbba6cc8fbd3cf7801642bc6d6";
 			$uData=$OfferRequest;
 	
 			$ch_affise = curl_init(); 
-			curl_setopt($ch_affise, CURLOPT_URL, "http://api.advertivi.com/2.1/admin/offer/".$offerId); 
+			curl_setopt($ch_affise, CURLOPT_URL, "http://api.advertivi.com/3.0/admin/offer/".$offerId); 
 			curl_setopt($ch_affise, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)');
 			
 			//curl_setopt($ch, CURLOPT_HEADER, 1); 

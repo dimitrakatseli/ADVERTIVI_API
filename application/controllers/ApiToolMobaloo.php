@@ -24,7 +24,7 @@ class ApiToolMobaloo extends CI_Controller {
     public function mobaloo($sourceId, $advertiserId, $api_key, $api_url) {
         $_response = '';
         // ADVERTISR API KEY
-        $affise_api_key = "fe1a826b70bb1db82c83fd2539ed2696380a7a8a";
+        $affise_api_key = "cc55b8e0c20027cbba6cc8fbd3cf7801642bc6d6";
 
         // ADVERTISR API KEY 
         //$api_key="516369095c02f52147f379aa0a7a522fb58b5ccef2a0b995e91f339fbd719737";
@@ -268,7 +268,7 @@ class ApiToolMobaloo extends CI_Controller {
         $header = Array();
         $header[0] = "Content-Type: application/x-www-form-urlencoded";
         $header[1] = "Accept: application/json";
-        $header[2] = "API-Key:fe1a826b70bb1db82c83fd2539ed2696380a7a8a";
+        $header[2] = "API-Key:cc55b8e0c20027cbba6cc8fbd3cf7801642bc6d6";
         $uData = $OfferRequest;
 
         $ch_affise = curl_init();
