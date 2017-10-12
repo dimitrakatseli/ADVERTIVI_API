@@ -4,6 +4,8 @@
 	ini_set('default_socket_timeout', 1000);
 	defined('BASEPATH') OR exit('No direct script access allowed');
 	
+        const ART_OF_CLICK_ID = 15;
+        
 	class ApiToolArtOfClick extends CI_Controller {
 		public $ExistingOffers=array();
 		public $All_Os_Versions=array();
@@ -12,7 +14,7 @@
 			$this->load->model('Api_Art_Of_Click_database');
 	    }  
 		public function index(){
-			$demand_sources=$this->Api_Art_Of_Click_database->get_demand_sources(10);
+			$demand_sources=$this->Api_Art_Of_Click_database->get_demand_sources(ART_OF_CLICK_ID);
 			if(isset($demand_sources[0])&&$demand_sources[0]->status==1){
 				$this->art_of_click($demand_sources[0]->demand_source_id,$demand_sources[0]->affise_adevrtiser_id,$demand_sources[0]->api_key,$demand_sources[0]->api_url);
 			}
