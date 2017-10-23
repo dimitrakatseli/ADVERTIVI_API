@@ -12,7 +12,8 @@ class ApiToolMobaloo extends CI_Controller {
 
     public $ExistingOffers = array();
     public $All_Os_Versions = array();
-
+    
+ 
     public function __construct() {
         parent::__construct();
         $this->load->model('Api_Mobaloo_database');
@@ -70,24 +71,24 @@ class ApiToolMobaloo extends CI_Controller {
             $this->All_Os_Versions = $this->Api_Mobaloo_database->getOsVersions_db();
             foreach ($_response->data as $offer) {
                 array_push($allOffersFromAdvertiser, $offer->id);
-                 if(!(isset($offer->approved))||!($offer->approved==1)){
-                  continue;
-                  }
-                  if(!(isset($offer->status))||($offer->status!='active')){
-                  continue;
-                  }
-                  if(!(isset($offer->name))||$offer->name==''){
-                  continue;
-                  }
-                  //$clogofile = new CURLFile($filePath, filetype($filePath), basename($filePath));
-                  //$data['logo']=$clogofile;
-                  if(!(isset($offer->trackingUrl))||$offer->trackingUrl==''){
-                  continue;
-                  }
-                  if(!(isset($offer->previewUrl))||$offer->previewUrl==''){
-                  continue;
-                  }
-                  array_push($allValidOffersFromAdvertiser,$offer->id); 
+                if (!(isset($offer->approved)) || !($offer->approved == 1)) {
+                    continue;
+                }
+                if (!(isset($offer->status)) || ($offer->status != 'active')) {
+                    continue;
+                }
+                if (!(isset($offer->name)) || $offer->name == '') {
+                    continue;
+                }
+                //$clogofile = new CURLFile($filePath, filetype($filePath), basename($filePath));
+                //$data['logo']=$clogofile;
+                if (!(isset($offer->trackingUrl)) || $offer->trackingUrl == '') {
+                    continue;
+                }
+                if (!(isset($offer->previewUrl)) || $offer->previewUrl == '') {
+                    continue;
+                }
+                array_push($allValidOffersFromAdvertiser, $offer->id);
             }
             //print_r($allValidOffersFromAdvertiser);
             //echo var_dump($allOffersFromAdvertiser);
@@ -111,7 +112,10 @@ class ApiToolMobaloo extends CI_Controller {
                 } else {
                     $data['status'] = 'active';
                 }
-
+                if (isset($offer->id)) {
+                    $data['advertiser_offer_id'] = $offer->id;
+                    $insert_row['advertiser_offer_id'] = $data['advertiser_offer_id'];
+                }
                 $insert_row['status'] = $data['status'];
 
                 //$clogofile = new CURLFile($filePath, filetype($filePath), basename($filePath));
@@ -130,16 +134,36 @@ class ApiToolMobaloo extends CI_Controller {
 
                     $insert_row['countries'] = $offer->countries;
                     // Convert countries string to an array of countries
-
-                    $offer->countries = explode(",", $offer->countries);
+                    echo 'offer->countries';
+                    echo var_dump($offer->countries);
+                    $offer->countries = explode("&", $offer->countries);
+                    //echo var_dump($offer->countries);
+                     //$offer->countries = explode(",", $offer->countries);   
+                    
+                    //echo var_dump($offer->countries);
                     //$affise_array = $this->toAffiseArray('countries', $offer->countries);
                     //array_merge($insert_affise_data, $affise_array);
                     // $insert_affise_data['countries[{' . $i . '}]'] = $offer->countries;
 
+                    
                     foreach ($offer->countries as $i => $country) {
+                       if($country === "UK"){
+                           $country = "GB";
+                           
+                       }
                         $data['countries[{' . $i . '}]'] = $country;
                         $insert_affise_data['countries[{' . $i . '}]'] = $country;
+                        //$insert_affise_data['payments[0][countries][{'.$i.'}]']=$country;
                     }
+                    echo '<br>affise_datacountries';
+                    foreach ($offer->countries as $i => $country) {
+                    echo var_dump($insert_affise_data['countries[{' . $i . '}]']);
+                    }
+                    echo '<br>';
+                    $offer->countries=NULL;
+                   $insert_affise_data['status']='active';
+                   $insert_affise_data['privacy']='private';
+                  
                 }
                 if (isset($offer->description) && $offer->description != '') {
                     $data['description'] = $offer->description;
@@ -148,13 +172,16 @@ class ApiToolMobaloo extends CI_Controller {
                 }
                 if (isset($offer->revenue_per_install) && $offer->revenue_per_install != '') {
                     $insert_row['payments'] = $offer->revenue_per_install;
-                    $affise_array = $this->toAffiseArray('countries', $offer->countries);
+                    //$affise_array = $this->toAffiseArray('countries', $offer->countries);
                     $insert_affise_data['payments[0][total]'] = $insert_row['payments'];
+                    /*
                     if (isset($offer->countries) && count($offer->countries) > 0) {
                         foreach ($offer->countries as $i => $country) {
                             $data['payments[0][countries][{' . $i . '}]'] = $country;
                         }
                     }
+                     * 
+                     */
 //                    if (isset($offer->device) && count($offer->device) > 0) {
 //                        foreach ($offer->device as $i => $dvice) {
 //                            if ($dvice == 'iPad') {
@@ -206,15 +233,20 @@ class ApiToolMobaloo extends CI_Controller {
                 $data['send_emails'] = 1;
                 $data['privacy'] = 'protected';
                 $data['advertiser'] = $advertiserId;
+                $data['demand_source'] = $sourceId;
 
                 $insert_row['send_emails'] = $data['send_emails'];
                 $insert_row['privacy'] = $data['privacy'];
                 $insert_row['advertiser'] = $data['advertiser'];
-
+                $insert_row['demand_source'] = $data['demand_source'];
+                
+                
+                $insert_affise_data['advertiser'] = $advertiserId;
                 //Check offer exists in local database
                 $oldOffer = $this->checkExistingOffer($offer->id, $advertiserId);
 
                 //If offer not exist, add offer
+                //echo var_dump($oldOffer['oldOfferData']);
                 if (!$oldOffer['isexist']) {
 
                     /*
@@ -249,43 +281,43 @@ class ApiToolMobaloo extends CI_Controller {
 
                     //Add offer only if Approved,Active,With Name,With Tracking Url and Preview Url
 
-                    $headerExOffer = Array();
-                    $headerExOffer[0] = "Content-type: application/json";
-                    $sendData['offer'] = $offer;
-                    $sendData['offerDataTosend'] = $data;
-                    $sendData['addedsourceId'] = $sourceId;
+                    $offerAddResult = $this->sendOfferToAffise($insert_affise_data);
+                    
+                    //echo "<b>Not Exists</b><br/>";
+                    //echo "<b>insert_affise_data</b><br/>";
+                    //echo var_dump($insert_affise_data);
+                    //echo "<br/>";
+                    //echo "<b>offerAddResult</b><br/>";
+                    //echo var_dump($offerAddResult);
+                    echo'databasecountries';
+                    echo var_dump($insert_row['countries']);
+                    echo "<br/>";
 
-                    $chExOffer = curl_init();
-                    curl_setopt($chExOffer, CURLOPT_URL, "http://rslinfotech.in/Advertivioffers/ApiToolMobaloo");
-                    curl_setopt($chExOffer, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)');
-                    curl_setopt($chExOffer, CURLOPT_CUSTOMREQUEST, "POST");
-                    curl_setopt($chExOffer, CURLOPT_POST, 1);
-                    curl_setopt($chExOffer, CURLOPT_POSTFIELDS, json_encode($sendData));
-                    curl_setopt($chExOffer, CURLOPT_SSL_VERIFYPEER, false);
-                    curl_setopt($chExOffer, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($chExOffer, CURLOPT_HTTPHEADER, $headerExOffer);
-                    $offerAddResult = curl_exec($chExOffer);
-                    if ($offerAddResult == "1") {
+                    $insert_row['affise_offer_id']=$offerAddResult->offer->id;
+                    $this->db->insert("tbl_offer", $insert_row);
+                    if ($offerAddResult->status == 1) {
                         $addcount++;
                     }
-                    curl_close($chExOffer);
                 } else {
                     $localOfferId = $oldOffer['oldOfferData']['id'];
                     $oldAffiseOfferId = $oldOffer['oldOfferData']['affise_offer_id'];
                     $deltedFromAffise = $oldOffer['oldOfferData']['deletedFromAffise'];
                     $changeCount = 0;
-                    if ($offer->approved != $oldOffer['oldOfferData']['approved']) {
-                        if (!(isset($offer->approved)) || $offer->approved != 1) {
-                            $data['status'] = 'stopped';
-                        }
-                        $changeCount++;
-                    }
-                    if (($offer->status) != $oldOffer['oldOfferData']['status']) {
-                        if ($offer->status == 'inactive') {
-                            $data['status'] = 'suspended';
-                        }
-                        $changeCount++;
-                    }
+                    /* if ($offer->approved != $oldOffer['oldOfferData']['approved']) {
+                      if (!(isset($offer->approved)) || $offer->approved != 1) {
+                      $data['status'] = 'stopped';
+                      }
+                      $changeCount++;
+                      }
+
+                      if (($offer->status) != $oldOffer['oldOfferData']['status']) {
+                      if ($offer->status == 'inactive') {
+                      $data['status'] = 'suspended';
+                      }
+                      $changeCount++;
+                      }
+                     * 
+                     */
                     if (urlencode($offer->name) != $oldOffer['oldOfferData']['title']) {
                         $changeCount++;
                     }
@@ -311,14 +343,22 @@ class ApiToolMobaloo extends CI_Controller {
                             array_push($deletedOffersFromAffise, $localOfferId);
                         }
                     }
-                }
-                if ($addcount > 20 || $updatecount > 200) {
-                    break;
-                }
-                $insert_affise_data['advertiser'] = '58e7821113e03b2b618b4f62';
+                    
+                    echo "<b>Exists</b><br/>";
+                    echo "<b>insert_affise_data</b><br/>";
+                    echo var_dump($insert_affise_data);
+                    echo "<br/>";
+                    
+                }/*
+                  if ($addcount > 20 || $updatecount > 200) {
+                  break;
+                  }
+                 * 
+                 */
                 $insert_row['demand_source'] = MOBALOO_ID;
                 $insert_row['approved'] = 1;
                 $insert_data[] = $insert_row;
+                
 
                 //echo var_dump($this->sendOfferToAffise($insert_affise_data));
             }
